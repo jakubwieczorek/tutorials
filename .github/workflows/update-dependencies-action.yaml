@@ -13,8 +13,8 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           
-      - name: Rebase main
-        run: git rebase main
+      - name: Rebase master
+        run: git rebase master
       
       - name: Perform dependency resolution and write new lockfiles
         run: ./gradlew dependencies --write-locks
@@ -23,6 +23,6 @@ jobs:
         run: git push --force
         
       - name: Create Pull Request
-        run: gh pr create -B update-dependencies -H main --title 'Update dependencies' --body 'Auto-generated dependency update'
+        run: gh pr create -B update-dependencies -H master --title 'Update dependencies' --body 'Auto-generated dependency update'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
