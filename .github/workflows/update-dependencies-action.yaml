@@ -26,14 +26,13 @@ jobs:
       - name: Perform dependency resolution and write new lockfiles
         run: ./gradlew dependencies --write-locks
 
-      - name: git add all
-        run: git add .
-        
-      - name: Committing all
-        run: git commit -m "gradle.lockfile update"
-
-      - name: Force push update-dependencies
-        run: git push --force origin update-dependencies
+      - name: Commit and push
+        run: |
+          git config --global user.name 'Github Action Bot'
+          git config --global user.email 'jakub.wieczorek0101@gmail.com'
+          git add .
+          git commit -m "gradle.lockfile update"
+          git push --force origin update-dependencies
         
       - name: Create Pull Request
         run: gh pr create -B update-dependencies -H master --title 'Update dependencies' --body 'Auto-generated dependency update'
