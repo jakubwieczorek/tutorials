@@ -19,7 +19,7 @@ jobs:
         run: ./gradlew dependencies --write-locks
 
       - name: Force push update-dependencies
-        run: git push --force update-dependencies
+        run: git push --force
         
       - name: Create Pull Request
         run: gh pr create -B update-dependencies -H master --title 'Update dependencies' --body 'Auto-generated dependency update'
