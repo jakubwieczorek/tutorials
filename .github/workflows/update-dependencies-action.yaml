@@ -1,7 +1,7 @@
 name: update-dependencies-action
 on:
   schedule:
-    - cron:  '* * * * *'
+    - cron:  '*/5 * * * *'
 jobs:     
   update-dep:
     runs-on: ubuntu-latest
@@ -17,3 +17,5 @@ jobs:
         
       - name: Create Pull Request
         run: gh pr create -B update-dependency -H master --title 'Update dependencies' --body 'Auto-generated dependency update'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
