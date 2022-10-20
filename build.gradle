@@ -12,8 +12,13 @@ repositories {
     mavenCentral()
 }
 
+dependencyLocking {
+    lockAllConfigurations()
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation group: 'io.vavr', name: 'vavr', version: '0.+'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
