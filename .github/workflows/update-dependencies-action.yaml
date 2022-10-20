@@ -2,7 +2,8 @@ name: update-dependencies-action
 on:
   schedule:
     - cron:  '*/5 * * * *'
-  workflow_dispatch:
+  branches:
+    - 'update-dependencies'
 jobs:     
   update-dep:
     runs-on: ubuntu-latest
@@ -20,7 +21,7 @@ jobs:
         run: ./gradlew dependencies --write-locks
 
       - name: Force push update-dependencies
-        run: git push --force
+        run: git push --force origin update-dependencies
         
       - name: Create Pull Request
         run: gh pr create -B update-dependencies -H master --title 'Update dependencies' --body 'Auto-generated dependency update'
