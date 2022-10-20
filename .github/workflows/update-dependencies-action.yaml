@@ -12,6 +12,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           
+      - name: Rebase master
+        run: git rebase master
+      
       - name: Perform dependency resolution and write new lockfiles
         run: ./gradlew dependencies --write-locks
         
