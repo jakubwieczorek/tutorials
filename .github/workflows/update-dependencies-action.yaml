@@ -7,21 +7,30 @@ on:
 jobs:     
   update-dep:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: update-dependencies
-          
+    steps:          
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
           
+      - uses: actions/checkout@v3
+        with:
+          ref: update-dependencies
+
+      - name: git fetch 
+        run: git fetch origin master
+        
       - name: Rebase master
-        run: git rebase master
+        run: git rebase origin/master
       
       - name: Perform dependency resolution and write new lockfiles
         run: ./gradlew dependencies --write-locks
+
+      - name: git add all
+        run: git add .
+        
+      - name: Committing all
+        run: git commit -m "gradle.lockfile update"
 
       - name: Force push update-dependencies
         run: git push --force origin update-dependencies
