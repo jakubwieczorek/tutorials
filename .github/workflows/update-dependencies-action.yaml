@@ -27,7 +27,7 @@ jobs:
 
       - name: Commit and push
         run: |
-          if ! git diff --quiet HEAD; then
+          if git diff --quiet HEAD; then
             git config --global user.name 'Github Action Bot'
             git config --global user.email 'jakub.wieczorek0101@gmail.com'
             git add .
@@ -39,7 +39,7 @@ jobs:
 
       - name: Create Pull Request
         run: |
-          if ! git diff --quiet HEAD; then
+          if git diff --quiet HEAD; then
             gh pr create -B master -H update-dependencies --title 'build(gradle): Update dependencies' --body 'Auto-generated dependency update'
           else 
             echo no dynamic dependencies updates
