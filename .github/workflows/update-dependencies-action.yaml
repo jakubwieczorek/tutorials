@@ -17,10 +17,10 @@ jobs:
         with:
           ref: update-dependencies
 
-      - name: git fetch and rebase 
+      - name: git fetch and reset master 
         run: |
           git fetch origin master
-          git rebase origin/master
+          git reset --hard origin/master
       
       - name: Perform dependency resolution and write new lockfiles
         run: ./gradlew dependencies --write-locks
