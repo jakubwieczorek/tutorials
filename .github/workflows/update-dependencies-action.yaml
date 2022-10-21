@@ -27,15 +27,22 @@ jobs:
 
       - name: Commit and push
         run: |
-          git config --global user.name 'Github Action Bot'
-          git config --global user.email 'jakub.wieczorek0101@gmail.com'
-          git add .
-          git commit -m "build(gradle): Update gradle.lockfile"
-          git push --force origin update-dependencies
-        
+          if ! git diff --quiet HEAD; then
+            git config --global user.name 'Github Action Bot'
+            git config --global user.email 'jakub.wieczorek0101@gmail.com'
+            git add .
+            git commit -m "build(gradle): Update gradle.lockfile"
+            git push --force origin update-dependencies
+          else 
+            echo no dynamic dependencies updates
+          fi
+
       - name: Create Pull Request
-        run: >-
-          gh pr create -B master -H update-dependencies --title 
-          'build(gradle): Update dependencies' --body 'Auto-generated dependency update'
+        run: |
+          if ! git diff --quiet HEAD; then
+            gh pr create -B master -H update-dependencies --title 'build(gradle): Update dependencies' --body 'Auto-generated dependency update'
+          else 
+            echo no dynamic dependencies updates
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
