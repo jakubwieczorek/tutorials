@@ -21,6 +21,7 @@ dependencies {
     implementation group: 'io.vavr', name: 'vavr', version: '0.+'
     implementation group: 'com.h2database', name: 'h2', version: '2.+'
     implementation group: 'io.micrometer', name: 'micrometer-core', version: '1.8.+'
+    implementation group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.+'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
