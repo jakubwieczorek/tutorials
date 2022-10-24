@@ -47,7 +47,7 @@ jobs:
               title: 'build(gradle): Update dependencies',
               owner,
               repo,
-              head: '${{ github.ref_name }}',
+              head: 'update-dependencies',
               base: 'master',
               body: [
                 'Auto-generated dependency update'
