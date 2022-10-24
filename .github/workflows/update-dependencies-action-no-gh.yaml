@@ -43,19 +43,33 @@ jobs:
         with:
           script: |
             const { repo, owner } = context.repo;
-            const result = await github.rest.pulls.create({
+            const pr_list = await github.rest.pulls.list({
               title: 'build(gradle): Update dependencies',
               owner,
               repo,
               head: 'update-dependencies',
-              base: 'master',
-              body: [
-                'Auto-generated dependency update'
-              ].join('\n')
+              base: 'master'
             });
-            github.rest.issues.addLabels({
-              owner,
-              repo,
-              issue_number: result.data.number,
-              labels: ['tutorials', 'patch-version']
-            });
+            
+            console.log('AAA')
+            console.log(pr_list)
+            console.log('BBB')
+            
+            if (pr_list.data.length == 0) {
+              const result = await github.rest.pulls.create({
+                title: 'build(gradle): Update dependencies',
+                owner,
+                repo,
+                head: 'update-dependencies',
+                base: 'master',
+                body: [
+                  'Auto-generated dependency update'
+                ].join('\n')
+              });
+              github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number: result.data.number,
+                labels: ['tutorials', 'patch-version']
+              });
+            }
