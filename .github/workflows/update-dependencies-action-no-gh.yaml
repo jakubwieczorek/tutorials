@@ -1,4 +1,4 @@
-name: update-dependencies-action
+name: update-dependencies-action-no-gh
 on:
   schedule:
     - cron:  '0 0 * * *'
@@ -25,7 +25,7 @@ jobs:
       - name: Perform dependency resolution and write new lockfiles
         run: ./gradlew dependencies --write-locks
 
-      - name: Commit, push, create pull request
+      - name: Commit and push
         run: |
           if ! git diff --quiet HEAD; then
             git config --global user.name 'Github Action Bot'
@@ -33,9 +33,29 @@ jobs:
             git add .
             git commit -m "build(gradle): Update gradle.lockfile"
             git push --force origin update-dependencies
-            gh pr create -B master -H update-dependencies --title 'build(gradle): Update dependencies' --body 'Auto-generated dependency update'
           else 
             echo no dynamic dependencies updates
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create pull request
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { repo, owner } = context.repo;
+            const result = await github.rest.pulls.create({
+              title: 'build(gradle): Update dependencies',
+              owner,
+              repo,
+              head: '${{ github.ref_name }}',
+              base: 'master',
+              body: [
+                'Auto-generated dependency update'
+              ].join('\n')
+            });
+            github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number: result.data.number,
+              labels: ['tutorials', 'patch-version']
+            });
