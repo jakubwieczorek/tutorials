@@ -1,0 +1,79 @@
+name: update-dependencies-action-no-gh-autodelete
+on:
+  schedule:
+    - cron:  '0 0 * * *'
+  workflow_dispatch:
+
+jobs:     
+  lock-dependencies:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.commit-and-push.outputs.result }}
+    steps:          
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          
+      - uses: actions/checkout@v3
+
+      - name: Checkout update-dependencies
+        run: git checkout -B update-dependencies
+      
+      - name: Perform dependency resolution and write new lockfiles
+        run: ./gradlew dependencies --write-locks
+
+      - name: Commit and push
+        id: commit-and-push
+        run: |
+          git config --global user.name 'Github Action Bot'
+          git config --global user.email 'jakub.wieczorek0101@gmail.com'
+          git add .
+          
+          if ! git diff --quiet HEAD; then
+            git commit -m "build(gradle): Update gradle.lockfile"
+            git push --force origin update-dependencies
+            echo "result=success" >> $GITHUB_OUTPUT
+          else 
+            echo "result=skipped" >> $GITHUB_OUTPUT
+            echo "no dynamic dependencies updates"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  create-pr:
+    runs-on: ubuntu-latest
+    needs: lock-dependencies
+    if: needs.lock-dependencies.outputs.result == 'success'
+    steps:
+      - name: Create pull request
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { repo, owner } = context.repo;
+            const pr_list = await github.rest.pulls.list({
+              title: 'build(gradle): Update dependencies',
+              owner,
+              repo,
+              head: 'update-dependencies',
+              base: 'master'
+            });
+            
+            if (pr_list.data.length == 0) {
+              const result = await github.rest.pulls.create({
+                title: 'build(gradle): Update dependencies',
+                owner,
+                repo,
+                head: 'update-dependencies',
+                base: 'master',
+                body: [
+                  'Auto-generated dependency update'
+                ].join('\n')
+              });
+              github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number: result.data.number,
+                labels: ['tutorials', 'patch-version']
+              });
+            }
