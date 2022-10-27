@@ -59,6 +59,8 @@ jobs:
               base: 'master'
             });
             
+            console.log(pr_list)
+            
             if (pr_list.data.length == 0) {
               const result = await github.rest.pulls.create({
                 title: 'build(gradle): Update dependencies',
