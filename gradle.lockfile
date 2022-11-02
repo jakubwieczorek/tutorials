@@ -3,6 +3,7 @@
 # This file is expected to be part of source control.
 ch.qos.logback:logback-classic:1.2.11=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 ch.qos.logback:logback-core:1.2.11=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+com.h2database:h2:2.1.214=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
 com.jayway.jsonpath:json-path:2.7.0=testCompileClasspath,testRuntimeClasspath
 com.vaadin.external.google:android-json:0.0.20131108.vaadin1=testCompileClasspath,testRuntimeClasspath
 io.vavr:vavr-match:0.10.4=compileClasspath,productionRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
